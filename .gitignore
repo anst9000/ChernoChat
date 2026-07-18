@@ -1,0 +1,31 @@
+# =========================================================================
+# Compiled Java Class Files & Build Output
+# =========================================================================
+*.class
+bin/
+target/
+*.jar
+*.war
+*.ear
+
+# =========================================================================
+# Eclipse IDE Metadata (Project State)
+# =========================================================================
+# Do NOT track Eclipse's local project state or temporary file history
+.metadata/
+.recommenders/
+RemoteSystemsTempFiles/
+.tmp/
+
+# =========================================================================
+# WindowBuilder & UI Cache Files
+# =========================================================================
+# Ignore local GUI layout caches and property states
+.settings/org.eclipse.wb.*
+*.wbp
+
+# =========================================================================
+# Operating System Generated Files
+# =========================================================================
+.DS_Store
+Thumbs.db
