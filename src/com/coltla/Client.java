@@ -36,6 +36,7 @@ public class Client extends JFrame {
 		this.port = port;
 		
 		createWindow();
+		console("Attempting a connection to " + address + ":" + port + ", user: " + name);
 	}
 
 	private void createWindow() {
@@ -104,4 +105,7 @@ public class Client extends JFrame {
 		txtMessage.requestFocusInWindow();
 	}
 
+	public void console(String message) {
+		history.append(message + "\n\r");
+	}
 }
