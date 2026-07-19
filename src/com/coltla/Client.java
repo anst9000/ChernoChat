@@ -19,6 +19,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 public class Client extends JFrame {
 
@@ -33,14 +37,39 @@ public class Client extends JFrame {
 	private String address;
 	private int port;
 	
+	private DatagramSocket socket;
+	private InetAddress ipAddress;
+	
 	public Client(String name, String address, int port) {
 		setTitle("Cherno Chat Client");
 		this.name = name;
 		this.address = address;
 		this.port = port;
+
+		boolean connect = openConnection(address, port);
+		if (!connect) {
+			System.err.println("Connection failed!");
+			console("Connection failed!");
+			return;
+		}
 		
 		createWindow();
 		console("Attempting a connection to " + address + ":" + port + ", user: " + name);
+	}
+	
+	private boolean openConnection(String address, int port) {
+		try {
+			socket = new DatagramSocket();
+			ipAddress = InetAddress.getByName(address);
+		} catch (UnknownHostException uhex) {
+			uhex.printStackTrace();
+			return false;
+		} catch (SocketException soex) {
+			soex.printStackTrace();
+			return false;
+		}
+		
+		return true;
 	}
 
 	private void createWindow() {
