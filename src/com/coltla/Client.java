@@ -64,9 +64,10 @@ public class Client extends JFrame {
 		contentPane.setLayout(gbl_contentPane);
 		
 		history = new JTextArea();
-		history.setEditable(false);
 		history.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		JScrollPane scroll = new JScrollPane(history);
+		history.setEditable(false);
+		
+		JScrollPane scrollPane = new JScrollPane(history);
 		caret = (DefaultCaret) history.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		GridBagConstraints scrollConstraints = new GridBagConstraints();
@@ -79,7 +80,7 @@ public class Client extends JFrame {
 		scrollConstraints.weightx = 1;
 		scrollConstraints.weighty = 1;
 		scrollConstraints.insets = new Insets(0, 5, 0, 0);
-		contentPane.add(scroll, scrollConstraints);
+		contentPane.add(scrollPane, scrollConstraints);
 		
 		txtMessage = new JTextField();
 		txtMessage.addKeyListener(new KeyAdapter() {
@@ -130,5 +131,6 @@ public class Client extends JFrame {
 
 	public void console(String message) {
 		history.append(message + "\n\r");
+		history.setCaretPosition(history.getDocument().getLength());
 	}
 }
