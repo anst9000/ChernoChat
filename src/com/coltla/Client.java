@@ -15,6 +15,10 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import javax.swing.JButton;
 import java.awt.Insets;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class Client extends JFrame {
 
@@ -61,7 +65,7 @@ public class Client extends JFrame {
 		
 		history = new JTextArea();
 		history.setEditable(false);
-		history.setFont(new Font("Arial", Font.PLAIN, 14));
+		history.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		JScrollPane scroll = new JScrollPane(history);
 		caret = (DefaultCaret) history.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
@@ -78,7 +82,14 @@ public class Client extends JFrame {
 		contentPane.add(scroll, scrollConstraints);
 		
 		txtMessage = new JTextField();
-		txtMessage.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtMessage.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					send(txtMessage.getText());
+				}
+			}
+		});
+		txtMessage.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		GridBagConstraints gbc_txtMessage = new GridBagConstraints();
 		gbc_txtMessage.insets = new Insets(0, 5, 0, 5);
 		gbc_txtMessage.fill = GridBagConstraints.HORIZONTAL;
@@ -91,6 +102,11 @@ public class Client extends JFrame {
 		txtMessage.setColumns(10);
 		
 		JButton btnSend = new JButton("Send");
+		btnSend.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				send(txtMessage.getText());
+			}
+		});
 		btnSend.setFont(new Font("Arial", Font.PLAIN, 16));
 		GridBagConstraints gbc_btnSend = new GridBagConstraints();
 		gbc_btnSend.insets = new Insets(0, 0, 0, 0);
@@ -103,6 +119,13 @@ public class Client extends JFrame {
 		setVisible(true);
 		
 		txtMessage.requestFocusInWindow();
+	}
+	
+	private void send(String message) {
+		if (message.equals("")) return;
+
+		console(message);
+		txtMessage.setText("");
 	}
 
 	public void console(String message) {
