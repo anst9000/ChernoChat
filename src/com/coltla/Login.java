@@ -60,13 +60,14 @@ public class Login extends JFrame {
 		txtName.setColumns(10);
 
 		lblName = new JLabel();
+		lblName.setText("Name:");
 		lblName.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblName.setBounds(119, 25, 45, 16);
+		lblName.setBounds(118, 28, 48, 16);
 		contentPane.add(lblName);
 
 		lblIpAddress = new JLabel("IP Address:");
 		lblIpAddress.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblIpAddress.setBounds(101, 102, 81, 16);
+		lblIpAddress.setBounds(101, 105, 81, 16);
 		contentPane.add(lblIpAddress);
 
 		txtAddress = new JTextField();
@@ -77,7 +78,7 @@ public class Login extends JFrame {
 
 		lblPort = new JLabel("Port:");
 		lblPort.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblPort.setBounds(124, 184, 36, 16);
+		lblPort.setBounds(124, 187, 36, 16);
 		contentPane.add(lblPort);
 
 		txtPort = new JTextField();
@@ -112,8 +113,9 @@ public class Login extends JFrame {
 	}
 
 	private void handleLogin(String name, String address, int port) {
+		// TODO: Check valid name, address and port 
 		dispose();
-		System.out.println(name + ", " + address + ", " + port);
+		new Client(name, address, port);
 	}
 
 	/**
