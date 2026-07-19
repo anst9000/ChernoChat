@@ -1,22 +1,11 @@
 package com.coltla;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.UIManager;
-import javax.swing.border.EmptyBorder;
-import javax.swing.text.DefaultCaret;
-
-import java.awt.GridBagLayout;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-
 import java.awt.Font;
 import java.awt.GridBagConstraints;
-import javax.swing.JButton;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -26,11 +15,21 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
+import javax.swing.text.DefaultCaret;
+
 public class Client extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	
+
 	private JTextArea history;
 	private DefaultCaret caret;
 	private JTextField txtMessage;
@@ -38,27 +37,29 @@ public class Client extends JFrame {
 	private String name;
 	private String address;
 	private int port;
-	
+
 	private DatagramSocket socket;
 	private InetAddress ipAddress;
-	
+
+	private Thread sendThread;
+
 	public Client(String name, String address, int port) {
 		setTitle("Cherno Chat Client");
 		this.name = name;
 		this.address = address;
 		this.port = port;
 
-		boolean connect = openConnection(address, port);
+		boolean connect = openConnection(this.address, this.port);
 		if (!connect) {
 			System.err.println("Connection failed!");
 			console("Connection failed!");
 			return;
 		}
-		
+
 		createWindow();
-		console("Attempting a connection to " + address + ":" + port + ", user: " + name);
+		console("Attempting a connection to " + this.address + ":" + this.port + ", user: " + this.name);
 	}
-	
+
 	private boolean openConnection(String address, int port) {
 		try {
 			socket = new DatagramSocket(port);
@@ -70,23 +71,38 @@ public class Client extends JFrame {
 			soex.printStackTrace();
 			return false;
 		}
-		
+
 		return true;
 	}
-	
-	private String receive() {
+
+	private String receiveFromServer() {
 		byte[] data = new byte[1024];
-		DatagramPacket packet = new DatagramPacket(data, data.length);
-		
+		DatagramPacket receivePacket = new DatagramPacket(data, data.length);
+
 		try {
-			socket.receive(packet);
+			socket.receive(receivePacket);
 		} catch (IOException ioex) {
 			ioex.printStackTrace();
 		}
-		
-		String message = new String(packet.getData());
-		
+
+		String message = new String(receivePacket.getData());
+
 		return message;
+	}
+
+	private void sendToServer(final byte[] data) {
+		sendThread = new Thread("Send Thread") {
+			public void run() {
+				DatagramPacket sendPacket = new DatagramPacket(data, data.length, ipAddress, port);
+				try {
+					socket.send(sendPacket);
+				} catch (IOException ioex) {
+					ioex.printStackTrace();
+				}
+			}
+		};
+
+		sendThread.start();
 	}
 
 	private void createWindow() {
@@ -95,24 +111,24 @@ public class Client extends JFrame {
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
-		
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(880, 550);
 		setLocationRelativeTo(null);
-		
+
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		
+
 		GridBagLayout gbl_contentPane = new GridBagLayout();
-		gbl_contentPane.columnWidths = new int[] { 16, 827, 30, 7 }; 	// SUM = 880
-		gbl_contentPane.rowHeights = new int[] { 35, 475, 40 }; 		// SUM = 550
+		gbl_contentPane.columnWidths = new int[] { 16, 827, 30, 7 }; // SUM = 880
+		gbl_contentPane.rowHeights = new int[] { 35, 475, 40 }; // SUM = 550
 		contentPane.setLayout(gbl_contentPane);
-		
+
 		history = new JTextArea();
 		history.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		history.setEditable(false);
-		
+
 		JScrollPane scrollPane = new JScrollPane(history);
 		caret = (DefaultCaret) history.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
@@ -127,7 +143,7 @@ public class Client extends JFrame {
 		scrollConstraints.weighty = 1;
 		scrollConstraints.insets = new Insets(0, 5, 0, 0);
 		contentPane.add(scrollPane, scrollConstraints);
-		
+
 		txtMessage = new JTextField();
 		txtMessage.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent e) {
@@ -147,7 +163,7 @@ public class Client extends JFrame {
 		gbc_txtMessage.weighty = 0;
 		contentPane.add(txtMessage, gbc_txtMessage);
 		txtMessage.setColumns(10);
-		
+
 		JButton btnSend = new JButton("Send");
 		btnSend.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -162,14 +178,15 @@ public class Client extends JFrame {
 		gbc_btnSend.weightx = 0;
 		gbc_btnSend.weighty = 0;
 		contentPane.add(btnSend, gbc_btnSend);
-		
+
 		setVisible(true);
-		
+
 		txtMessage.requestFocusInWindow();
 	}
-	
+
 	private void send(String message) {
-		if (message.equals("")) return;
+		if (message.equals(""))
+			return;
 
 		console(message);
 		txtMessage.setText("");
