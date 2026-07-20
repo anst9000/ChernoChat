@@ -193,9 +193,12 @@ public class Client extends JFrame {
 		if (message.equals(""))
 			return;
 
+		message = name + ": " + message;
 		console(message);
-		sendToServer(message.getBytes());
 		txtMessage.setText("");
+
+		message = "m" + message;
+		sendToServer(message.getBytes());
 	}
 
 	public void console(String message) {

@@ -3,6 +3,7 @@ package com.coltla.server;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -75,16 +76,42 @@ public class Server implements Runnable {
 
 			private void process(DatagramPacket packet) {
 				String received = new String(packet.getData());
+				char messageType = received.charAt(0);
+				String messageContent = received.substring(1);
 				
-				switch(received.charAt(0)) {
+				switch(messageType) {
 					case 'c': {
 						int clientId = UniqueIdentifier.getIdentifier();
-						clients.add(new ClientInformation(received.substring(1), packet.getAddress(), packet.getPort(), clientId));
-						System.out.println("Name: " + received.substring(1) + "\nID: " + clientId);
+						clients.add(new ClientInformation(messageContent, packet.getAddress(), packet.getPort(), clientId));
+						System.out.println("Name: " + messageContent + "\nID: " + clientId);
+					}
+					case 'a': {
+						sendToAll(received);
 					}
 				}
 			}
-		};
+
+			private void sendToAll(String messageContent) {
+				for (ClientInformation client : clients) {
+					 send(messageContent.getBytes(), client.inetAddress, client.port);
+				}
+			}
+			
+			private void send(final byte[] data, final InetAddress inetAddress, final int port) {
+				sendThread = new Thread("Send Thread") {
+					public void run() {
+						DatagramPacket packet = new DatagramPacket(data, data.length, inetAddress, port);
+						try {
+							socket.send(packet);
+						} catch (IOException ioex) {
+							ioex.printStackTrace();
+						}						
+					}
+				};
+				
+				sendThread.start();
+			}
+ 		};
 		
 		receiveThread.start();
 	}	
