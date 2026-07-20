@@ -1,5 +1,7 @@
 package com.coltla.server;
 
+import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
@@ -24,10 +26,13 @@ public class Server implements Runnable {
 	}
     
     serverThread = new Thread(this, "Server Thread");
+    serverThread.run();
   }
 
 	public void run() {
 		isRunning = true;
+		System.out.println("Server started on port " + port);
+		
 		manageClients();
 		receive();
 	}
@@ -49,6 +54,16 @@ public class Server implements Runnable {
 			public void run() {
 				while (isRunning) {
 					// Receive Data
+					byte[] data = new byte[1024];
+					DatagramPacket packet = new DatagramPacket(data, data.length);
+					try {
+						socket.receive(packet);
+					} catch (IOException ioex) {
+						ioex.printStackTrace();
+					}
+					
+					String received = new String(packet.getData());
+					System.out.println(received);
 				}
 			}
 		};
