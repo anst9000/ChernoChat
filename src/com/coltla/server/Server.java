@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,14 +67,24 @@ public class Server implements Runnable {
 						ioex.printStackTrace();
 					}
 					
-					String received = new String(packet.getData());
+					process(packet);
 					clients.add(new ClientInformation("Acke", packet.getAddress(), packet.getPort(), 50));
 					System.out.println(clients.get(0).inetAddress.toString() + ":" + clients.get(0).port);
-					System.out.println(received);
+				}
+			}
+
+			private void process(DatagramPacket packet) {
+				String received = new String(packet.getData());
+				
+				switch(received.charAt(0)) {
+					case 'c': {
+						clients.add(new ClientInformation(received.substring(1), packet.getAddress(), packet.getPort(), 50));
+						System.out.println(received.substring(1));
+					}
 				}
 			}
 		};
 		
 		receiveThread.start();
-	}
+	}	
 }

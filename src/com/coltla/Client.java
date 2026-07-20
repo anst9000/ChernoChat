@@ -14,6 +14,8 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -59,9 +61,8 @@ public class Client extends JFrame {
 		createWindow();
 		console("Attempting a connection to " + this.address + ":" + this.port + ", user: " + this.name);
 		
-		String connectionMessage = name + " connected from " + this.address + ":" + this.port;
-		sendToServer(connectionMessage.getBytes());
-		
+		String connectionMessage = "c" + this.name;
+		sendToServer(connectionMessage.getBytes());		
 	}
 
 	private boolean openConnection(String address) {
@@ -187,7 +188,7 @@ public class Client extends JFrame {
 
 		txtMessage.requestFocusInWindow();
 	}
-
+	
 	private void send(String message) {
 		if (message.equals(""))
 			return;
