@@ -78,8 +78,9 @@ public class Server implements Runnable {
 				
 				switch(received.charAt(0)) {
 					case 'c': {
-						clients.add(new ClientInformation(received.substring(1), packet.getAddress(), packet.getPort(), 50));
-						System.out.println(received.substring(1));
+						int clientId = UniqueIdentifier.getIdentifier();
+						clients.add(new ClientInformation(received.substring(1), packet.getAddress(), packet.getPort(), clientId));
+						System.out.println("Name: " + received.substring(1) + "\nID: " + clientId);
 					}
 				}
 			}
