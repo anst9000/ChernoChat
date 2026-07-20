@@ -47,12 +47,12 @@ public class Login extends JFrame {
 		textName.setColumns(10);
 		
 		JLabel lblName = new JLabel("Name");
-		lblName.setFont(new Font("Arial", Font.PLAIN, 16));
+		lblName.setFont(new Font("Arial", Font.BOLD, 16));
 		lblName.setBounds(116, 20, 53, 17);
 		contentPane.add(lblName);
 		
 		JLabel lblIPAddress = new JLabel("IP Address");
-		lblIPAddress.setFont(new Font("Arial", Font.PLAIN, 16));
+		lblIPAddress.setFont(new Font("Arial", Font.BOLD, 16));
 		lblIPAddress.setBounds(99, 88, 88, 17);
 		contentPane.add(lblIPAddress);
 		
@@ -63,7 +63,7 @@ public class Login extends JFrame {
 		contentPane.add(textIPAddress);
 		
 		JLabel lblPort = new JLabel("Port");
-		lblPort.setFont(new Font("Arial", Font.PLAIN, 16));
+		lblPort.setFont(new Font("Arial", Font.BOLD, 16));
 		lblPort.setBounds(123, 170, 39, 17);
 		contentPane.add(lblPort);
 		
@@ -74,13 +74,13 @@ public class Login extends JFrame {
 		contentPane.add(textPort);
 		
 		JLabel lblExampleIPAddress = new JLabel("eg. 192.168.0.2");
-		lblExampleIPAddress.setFont(new Font("Arial", Font.PLAIN, 14));
-		lblExampleIPAddress.setBounds(87, 141, 112, 17);
+		lblExampleIPAddress.setFont(new Font("Arial", Font.PLAIN, 12));
+		lblExampleIPAddress.setBounds(91, 141, 101, 17);
 		contentPane.add(lblExampleIPAddress);
 		
 		JLabel lblExamplePort = new JLabel("eg. 8192");
-		lblExamplePort.setFont(new Font("Arial", Font.PLAIN, 14));
-		lblExamplePort.setBounds(109, 221, 68, 17);
+		lblExamplePort.setFont(new Font("Arial", Font.PLAIN, 12));
+		lblExamplePort.setBounds(113, 221, 58, 17);
 		contentPane.add(lblExamplePort);
 		
 		btnLogin = new JButton("Login");
